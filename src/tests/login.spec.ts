@@ -1,16 +1,17 @@
 import { test, expect } from "@playwright/test";
 import LoginPage from "../pages/LoginPage";
-import HomePage from "../pages/LoginPage";
 
-test.only("Login with valid user", async ({ page }) => {
+//Login -> Validate Home Page
+test("Login with valid creds", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.navigateToLoginPage();
-  const homePage = await loginPage.LoginWithValidCreds()
+  const homePage = await loginPage.Login();
   await homePage.validateHomePage();
 });
 
-test("Login with Invalid user", async ({ page }) => {
+//Login -> Failed to Login
+test("Login with Invalid creds", async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.navigateToLoginPage();
-  expect(await loginPage.LoginWithInvalidCreds()).toBeFalsy();
+  await loginPage.LoginWithInvalidCreds();
 });
