@@ -79,11 +79,8 @@ export default class LoginPage {
 
   async validateErrorBanner() {
     try {
-      const success = await expect(
-        this.page.locator(this.errorBannerSelector),
-      ).toBeVisible({ timeout: 10000 });
+      await expect(this.page.locator(this.errorBannerSelector)).toBeVisible({ timeout: 10000});
       logger.info(`Failed login banner is visible`);
-      return success;
     } catch (error) {
       logger.error(`Failed login banner is not visible`);
       throw error;
