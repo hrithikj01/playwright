@@ -78,13 +78,11 @@ export default class LoginPage {
   }
 
   async validateErrorBanner() {
-    try {
-      await expect(this.page.locator(this.errorBannerSelector)).toBeVisible({ timeout: 10000});
-      logger.info(`Failed login banner is visible`);
-    } catch (error) {
-      logger.error(`Failed login banner is not visible`);
-      throw error;
-    }
+    await expect(this.page.locator(this.errorBannerSelector)).toBeVisible({
+      timeout: 10000,
+    });
+
+    logger.info("Error banner is visible");
   }
 
   async Login(username?: string, password?: string) {
@@ -101,17 +99,12 @@ export default class LoginPage {
     }
   }
 
-  async LoginWithInvalidCreds(username?: string, password?: string) {
-    try {
-      await this.fillUsername(username);
-      await this.fillPassword(password);
-      await this.clickLoginButton();
-      await this.validateErrorBanner();
-      logger.info(`Login with invalid credentials is failed`);
-      return true;
-    } catch (error) {
-      logger.error(`Failed login banner is not visible`);
-      return false;
-    }
+  async LoginWithInvalidCreds() {
+    const username = process.env.locked_out_user;
+    await this.fillUsername(username);
+    await this.fillPassword();
+    await this.clickLoginButton();
+    await this.validateErrorBanner();
+    logger.info("Invalid login verified successfully");
   }
 }
