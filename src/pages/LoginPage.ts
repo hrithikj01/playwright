@@ -2,9 +2,17 @@ import { expect, Page } from "@playwright/test";
 import HomePage from "./HomePage";
 import logger from "../utils/LoggerUtils";
 import { error } from "console";
+import findValidElement from "../utils/SelfHealingUtils";
+import { LocatorStrategy } from "../utils/LocatorTypes";
 
 export default class LoginPage {
   private readonly usernameInputSelector = '[data-test="username"]';
+  private usernameInputSelectors: LocatorStrategy[] = [
+    { type: "label", value: "Username" },
+    { type: "placeholder", value: "Username" },
+    { type: "testId", value: "username" },
+    { type: "css", value: '[data-test="username"]' },
+  ];
   private readonly passwordInputSelector = '[data-test="password"]';
   private readonly loginBtnSelector = '[data-test="login-button"]';
   private readonly errorBannerSelector = '[data-test="error"]';
@@ -36,7 +44,11 @@ export default class LoginPage {
   async fillUsername(username?: string) {
     const user = username ?? process.env.username!;
     try {
-      await this.page.locator(this.usernameInputSelector).fill(user);
+      const inputField = await findValidElement(
+        this.page,
+        this.usernameInputSelectors,
+      );
+      await inputField?.fill(user!);
       logger.info("Filled username");
     } catch (error) {
       logger.error("Failed to fill username");
